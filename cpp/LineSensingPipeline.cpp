@@ -23,7 +23,7 @@ void LineSensingPipeline::Process(cv::Mat& source0){
 	//Step Blur0:
 	//input
 	cv::Mat blurInput = resizeImageOutput;
-	BlurType blurType = BlurType::BOX;
+	BlurType blurType = BOX;
 	double blurRadius = 6.306306306306306;  // default Double
 	blur(blurInput, blurType, blurRadius, this->blurOutput);
 	//Step CV_Threshold0:
