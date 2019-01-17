@@ -3,6 +3,7 @@
 namespace grip {
 
 LineSensingPipeline::LineSensingPipeline() {
+	cvThresholdValue = 170;
 }
 /**
 * Runs an iteration of the pipeline and updates outputs.
@@ -28,7 +29,7 @@ void LineSensingPipeline::Process(cv::Mat& source0){
 	//Step CV_Threshold0:
 	//input
 	cv::Mat cvThresholdSrc = blurOutput;
-	double cvThresholdThresh = 170.0;  // default Double
+	double cvThresholdThresh = (double)cvThresholdValue;  // default Double
 	double cvThresholdMaxval = 256.0;  // default Double
     int cvThresholdType = cv::THRESH_BINARY;
 	cvThreshold(cvThresholdSrc, cvThresholdThresh, cvThresholdMaxval, cvThresholdType, this->cvThresholdOutput);
@@ -157,7 +158,7 @@ std::vector<Line>* LineSensingPipeline::GetFindLinesOutput(){
 	 * @param lineList The output where the lines are stored.
 	 */
 	void LineSensingPipeline::findLines(cv::Mat &input, std::vector<Line> &lineList) {
-		cv::Ptr<cv::LineSegmentDetector> lsd = cv::createLineSegmentDetector(LSD_REFINE_STD);
+		cv::Ptr<cv::LineSegmentDetector> lsd = cv::createLineSegmentDetector(cv::LSD_REFINE_NONE);
 		std::vector<cv::Vec4i> lines;
 		lineList.clear();
 		if (input.channels() == 1) {
@@ -170,14 +171,15 @@ std::vector<Line>* LineSensingPipeline::GetFindLinesOutput(){
 		}
 		// Store the lines in the LinesReport object
 		if (!lines.empty()) {
-			for (int i = 0; i < lines.size(); i++) {
+			for (unsigned int i = 0; i < lines.size(); i++) {
 				cv::Vec4i line = lines[i];
 				lineList.push_back(Line(line[0], line[1], line[2], line[3]));
 			}
 		}
 	}
 
-
+	void LineSensingPipeline::setCvThreshold(int thresh){
+		cvThresholdValue = thresh;
+	}
 
 } // end grip namespace
-
