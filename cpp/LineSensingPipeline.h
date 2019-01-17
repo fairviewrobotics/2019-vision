@@ -73,13 +73,13 @@ class LineSensingPipeline {
 		cv::Mat resizeImageOutput;
 		cv::Mat blurOutput;
 		cv::Mat cvThresholdOutput;
-		std::vector<Line> findLinesOutput;
 		int cvThresholdValue;
+		Line findLineOutput;
 		void desaturate(cv::Mat &, cv::Mat &);
 		void resizeImage(cv::Mat &, double , double , int , cv::Mat &);
 		void blur(cv::Mat &, BlurType &, double , cv::Mat &);
 		void cvThreshold(cv::Mat &, double , double , int , cv::Mat &);
-		void findLines(cv::Mat &, std::vector<Line> &);
+		void findLine(cv::Mat &, Line &);
 
 	public:
 		LineSensingPipeline();
@@ -88,7 +88,7 @@ class LineSensingPipeline {
 		cv::Mat* GetResizeImageOutput();
 		cv::Mat* GetBlurOutput();
 		cv::Mat* GetCvThresholdOutput();
-		std::vector<Line>* GetFindLinesOutput();
+		Line * GetFindLineOutput();
 		void setCvThreshold(int threshold);
 };
 

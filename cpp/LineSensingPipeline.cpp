@@ -2,7 +2,7 @@
 
 namespace grip {
 
-LineSensingPipeline::LineSensingPipeline() {
+LineSensingPipeline::LineSensingPipeline():findLineOutput(0.0, 0.0, 0.0, 0.0) {
 	cvThresholdValue = 170;
 }
 /**
@@ -36,7 +36,7 @@ void LineSensingPipeline::Process(cv::Mat& source0){
 	//Step Find_Lines0:
 	//input
 	cv::Mat findLinesInput = cvThresholdOutput;
-	findLines(findLinesInput, this->findLinesOutput);
+	findLine(findLinesInput, findLineOutput);
 }
 
 /**
@@ -71,8 +71,8 @@ cv::Mat* LineSensingPipeline::GetCvThresholdOutput(){
  * This method is a generated getter for the output of a Find_Lines.
  * @return LinesReport output from Find_Lines.
  */
-std::vector<Line>* LineSensingPipeline::GetFindLinesOutput(){
-	return &(this->findLinesOutput);
+Line *LineSensingPipeline::GetFindLineOutput(){
+	return &(this->findLineOutput);
 }
 	/**
 	 * Converts a color image into shades of grey.
@@ -157,25 +157,26 @@ std::vector<Line>* LineSensingPipeline::GetFindLinesOutput(){
 	 * @param input The image on which to perform the find lines.
 	 * @param lineList The output where the lines are stored.
 	 */
-	void LineSensingPipeline::findLines(cv::Mat &input, std::vector<Line> &lineList) {
-		cv::Ptr<cv::LineSegmentDetector> lsd = cv::createLineSegmentDetector(cv::LSD_REFINE_NONE);
-		std::vector<cv::Vec4i> lines;
-		lineList.clear();
-		if (input.channels() == 1) {
-			lsd->detect(input, lines);
-		} else {
-			// The line detector works on a single channel.
-			cv::Mat tmp;
-			cv::cvtColor(input, tmp, cv::COLOR_BGR2GRAY);
-			lsd->detect(tmp, lines);
-		}
-		// Store the lines in the LinesReport object
-		if (!lines.empty()) {
-			for (unsigned int i = 0; i < lines.size(); i++) {
-				cv::Vec4i line = lines[i];
-				lineList.push_back(Line(line[0], line[1], line[2], line[3]));
-			}
-		}
+	void LineSensingPipeline::findLine(cv::Mat &input, Line &line) {
+
+		std::vector<std::vector<cv::Point>> contours;
+    cv::Vec4f lines;
+
+		cv::findContours(input,contours,cv::RETR_LIST,cv::CHAIN_APPROX_SIMPLE);
+    cv::fitLine(cv::Mat(contours[0]),lines,2,0,0.01,0.01);
+
+		//lines is (vx, vy, x0, y0)
+		findLineOutput.x1 = lines[2];
+		findLineOutput.y1 = lines[3];
+		findLineOutput.x2 = lines[2] + lines[0];
+		findLineOutput.y2 = lines[3] + lines[1];
+
+    int lefty = (-lines[2]*lines[1]/lines[0])+lines[3];
+    int righty = ((input.cols-lines[2])*lines[1]/lines[0])+lines[3];
+
+    cv::line(input,cv::Point(input.cols-1,righty),cv::Point(0,lefty),cv::Scalar(255,0,0),2);
+
+
 	}
 
 	void LineSensingPipeline::setCvThreshold(int thresh){

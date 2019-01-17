@@ -13,15 +13,19 @@ const int thresh = 170;
 team2036::LineSensingPipelineRunner runner(cameraIndex, thresh);
 
 /* uncomment the following line, or pass -DDISPLAY_DEBUG to g++ to display thresholding debugging images (only for platforms with guis) */
-//#define DISPLAY_DEBUG  1
+#define DISPLAY_DEBUG  1
 
 
 int main(){
+  std::vector<std::vector<cv::Point>> contours;
+  cv::Vec4f lines;
   #ifdef DISPLAY_DEBUG
     cv::namedWindow( "Test", cv::WINDOW_AUTOSIZE );
   #endif
   while(1){
     runner.runPipeline();
+
+    
     printf("%f\n", runner.getAngle());
     #ifdef DISPLAY_DEBUG
       cv::imshow("Test", *runner.getPipeline()->GetCvThresholdOutput());

@@ -7,9 +7,10 @@ LineSensingPipeline.h LineSensingPipelineRunner.h
 OBJS = \
 LineSensingPipeline.o LineSensingPipelineRunner.o Main.o
 
+#CXXFLAGS += -DDISPLAY_DEBUG
 
-CXXFLAGS += -Wall
-LDFLAGS += `pkg-config --cflags --libs opencv`
+CXXFLAGS += -Wall -g
+LDFLAGS += `pkg-config --cflags --libs opencv` -g
 
 all: $(BIN)
 

@@ -6,14 +6,11 @@ namespace team2036 {
 
       /* Pipeline object */
       grip::LineSensingPipeline pipeline;
-      /* longest two lines */
-      grip::Line *long_lines[2];
       /* camera */
       cv::VideoCapture camera;
       cv::Mat in_image;
 
-      /* find longest lines */
-      void find_longest();
+
 
     public:
 
