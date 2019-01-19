@@ -20,18 +20,14 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.*;
 import org.opencv.objdetect.*;
 
-public class LineSenseRunner {
-    public LineSensingVisionPipeline pipeline = new LineSensingVisionPipeline();
+public class LineSense {
     public Mat image = new Mat();
     private VideoCapture cam;
+    public LineSensingAlgorithm algorithm = new LineSensingAlgorithm();
 
     static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	}
-
-    public LineSensingVisionPipeline getPipeline(){
-        return pipeline;
-    }
 
     public void openCamera(int index) {
         VideoCapture camera = new VideoCapture(index);
@@ -42,9 +38,8 @@ public class LineSenseRunner {
         cam = camera;
     }
 
-    public void runPipeline(){
+    public void runAlgorithm(){
         cam.read(image);
-        pipeline.process(image);
+        algorithm.run(image);
     }
-
 }

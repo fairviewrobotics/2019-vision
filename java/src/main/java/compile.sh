@@ -1,0 +1,2 @@
+javac -cp .:/usr/share/java/opencv.jar frc/team2036/robot/Main.java
+javac -cp .:/usr/share/java/opencv.jar frc/team2036/robot/vision/linesensing/LineSense.java frc/team2036/robot/vision/linesensing/Imshow.java frc/team2036/robot/vision/linesensing/LineSensingAlgorithm.java
