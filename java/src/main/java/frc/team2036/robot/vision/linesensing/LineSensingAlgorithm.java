@@ -28,7 +28,7 @@ public class LineSensingAlgorithm {
     //downscale size
     private int sizeX = 420, sizeY = 320;
     //blur size
-    private int blurSize = 7;
+    private int blurSize = 11;
 
     public void run(Mat input){
         //resize
@@ -47,9 +47,34 @@ public class LineSensingAlgorithm {
         Imgproc.findContours(thresholded, contours, contourHierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
         int largestIdx = findLargestContourIdx(contours);
 
-        //draw contours
+        //find moments
+        Moments moments = Imgproc.moments(contours.get(largestIdx));
+        Point centroid = new Point();
+        //centroid
+	    centroid.x = moments.get_m10() / moments.get_m00();
+        centroid.y = moments.get_m01() / moments.get_m00();
+
+        //fit ellipse
+        MatOfPoint2f contour_points = new MatOfPoint2f();
+        contours.get(largestIdx).convertTo(contour_points, CvType.CV_32F);
+        RotatedRect ellipse = Imgproc.fitEllipse(contour_points);
+
+        //check major and minor axis
+        float axis1 = ellipse.size.width;
+        float axis2 = ellipse.size.height;
+
+        float major_axis = axis1 > axis2 ? axis1 : axis2;
+        float minor_axis = axis1 > axis2 ? axis2 : axis1;
+
+        //TODO: check major axis is certain amount more than minor axis
+
+        //print angle
+        System.out.println(ellipse.angle);
+
+        //draw contours + centroid
 
         Imgproc.drawContours(blured, contours, largestIdx, new Scalar(0,255,0), 5);
+        Imgproc.circle(blured, centroid, 3, new Scalar(0,0,0), 3);
 
     }
 
