@@ -25,17 +25,19 @@ import org.opencv.objdetect.*;
 
 public class Main {
     private static LineSense sense = new LineSense();
-    private static Imshow imgshow = new Imshow("Test", 420, 320);
-    private static Imshow imgshow2 = new Imshow("Test 2", 420, 320);
+
+    static Imshow imgshow = new Imshow("test", 420, 320);
 
     public static void run(){
         sense.runAlgorithm();
+        System.out.println(sense.algorithm.angle);
+        System.out.println(sense.algorithm.angle_updated);
         imgshow.showImage(sense.algorithm.blured);
-        imgshow2.showImage(sense.algorithm.thresholded);
     }
 
     public static void main(String args[]){
         sense.openCamera(1);
+        //sense.algorithm.setDownscaleSize(240, 180);
         while(true){
             run();
         }
